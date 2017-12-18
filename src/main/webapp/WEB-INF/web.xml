@@ -1,7 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE web-app PUBLIC
  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>lamps</display-name>
+  <welcome-file-list>
+    <welcome-file></welcome-file>
+  </welcome-file-list>
+
+  <!--logback配置文件-->
+  <context-param>
+    <param-name>logbackConfigLocation</param-name>
+    <!--classpath是指 WEB-INF文件夹下的classes目录-->
+    <!--classpath：只会到你的class路径中查找找文件;-->
+    <!--classpath*：不仅包含class路径，还包括jar文件中(class路径)进行查找.-->
+    <!--而使用classpath*:前缀则能够加载所有符合类型的文件。然而，使用classpath*:需要遍历所有的classpath，加载速度很慢，因此您应该尽量避免使用classpath*。-->
+    <param-value>classpath:/resources/logback.xml</param-value>
+  </context-param>
+  <listener>
+    <!--其中LogbackConfigListener由前述的logback-ext-spring依赖提供，若不依赖它则找不到这个listener类-->
+    <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+  </listener>
+
 </web-app>
