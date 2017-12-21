@@ -11,7 +11,7 @@
   <!--加载Spring配置文件 -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:/spring-mybatis.xml</param-value>
+    <param-value>classpath:/spring-hibernate.xml</param-value>
     <!--此工程的classpath就是指src/main/java，src/main/resources，src/main/webapp，
     由此可知，假如在main文件夹下新建一个文件properties，
     那么classpath在原有三个文件的基础上又多了一个src/main/properties-->

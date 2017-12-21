@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--配置自动扫描的包，不包括controler层-->
+    <context:component-scan base-package="com.gzho">
+        <!--将Controller的注解排除掉 -->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+
+    <!-- 配置数据源 -->
+    <!-- 代替简化配置PropertyPlaceholderConfigurer -->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <!-- 连接地址 -->
+        <property name="url" value="${jdbc.url}" />
+        <!-- 访问用户名 -->
+        <property name="username" value="${jdbc.username}" />
+        <!-- 访问用户名的密码 -->
+        <property name="password" value="${jdbc.password}" />
+
+        <!-- 最大连接数据库连接数，设置为0时，表示没有限制 -->
+        <property name="maxActive" value="${jdbc.maxActive}" />
+        <!-- 最大等待连接中的数量，设置为0时，表示没有限制 -->
+        <property name="minIdle" value="${jdbc.minIdle}" />
+        <!-- 最大等待秒数，单位为毫秒， 超过时间会报出错误信息 -->
+        <property name="maxWait" value="${jdbc.maxWait}" />
+
+        <!-- 验证查询，防止虚拟机误认为数据库连接已断开 -->
+        <property name="validationQuery" value="SELECT 'x'" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+
+        <property name="initialSize" value="${jdbc.initialSize}" />
+        <property name="removeAbandoned" value="true" />
+        <property name="removeAbandonedTimeout" value="1800" />
+        <property name="timeBetweenEvictionRunsMillis" value="30000" />
+        <property name="minEvictableIdleTimeMillis" value="60000" />
+
+        <property name="testOnReturn" value="false" />
+        <property name="filters" value="stat" />
+        <property name="poolPreparedStatements" value="true" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="50" />
+    </bean>
+
+    <!-- 配置SessionFactory -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 配置Hibernate 的常用属性 -->
+        <property name="hibernateProperties">
+            <props>
+                <!-- 数据库的方言 -->
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.connection.release_mode">after_transaction</prop>
+            </props>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>com.gzho.lamps.entity</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 配置Hibernate 的事物管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
+
+</beans>
