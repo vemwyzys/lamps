@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author :gzho
  */
-
+@RequestMapping("/test")
 @Controller
 public class TestSpringmvc {
 
-    @RequestMapping("test")
+    @RequestMapping("index")
     public String testIndex(){
         return "testIndex";
         //对应刚刚创建的jsp文件名，这里用的是逻辑视图

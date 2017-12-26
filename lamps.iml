@@ -16,27 +16,7 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration>
-        <fileset id="web dispatcherServlet servlet context" name="MVC dispatcherServlet servlet context" removed="true">
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext.xml</file>
-        </fileset>
-        <fileset id="web application context" name="MVC application context" removed="true">
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-dataSource.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-transaction.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-hibernate.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext.xml</file>
-        </fileset>
-        <fileset id="web SpringMVC servlet context" name="MVC SpringMVC servlet context" removed="true">
-          <file>file://$MODULE_DIR$/src/main/resources/spring-mvc.xml</file>
-        </fileset>
-        <fileset id="fileset" name="Spring Application Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-dataSource.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-hibernate.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-transaction.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/applicationContext.xml</file>
-          <file>file://$MODULE_DIR$/src/main/resources/spring-mvc.xml</file>
-        </fileset>
-      </configuration>
+      <configuration />
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
