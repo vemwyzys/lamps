@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
+  <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://java.sun.com/xml/ns/javaee"
+           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+           id="WebApp_ID" version="3.0">
   <display-name>lamps</display-name>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
@@ -11,7 +11,7 @@
   <!--加载Spring配置文件 -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:/applicationContext.xml</param-value>
+    <param-value>classpath:/applicationContext*.xml</param-value>
     <!--此工程的classpath就是指src/main/java，src/main/resources，src/main/webapp，
     由此可知，假如在main文件夹下新建一个文件properties，
     那么classpath在原有三个文件的基础上又多了一个src/main/properties-->
@@ -21,8 +21,72 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+  <!-- 防止Spring内存溢出监听器 -->
+  <listener>
+    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+  </listener>
 
-  <!--SpringMVC前端控制器 -->
+  <!-- 配置SESSION超时，单位是分钟 -->
+  <session-config>
+    <session-timeout>15</session-timeout>
+  </session-config>
+
+  <!--过滤器：使浏览器form表单支持GET、POST、PUT与DELETE请求
+  &lt;!&ndash;工作原理是将jsp页面的form表单的method属性值在doFilterInternal方法中转化为标准的Http方法，
+      即GET,、POST、HEAD、OPTIONS、PUT、DELETE、TRACE，然后到Controller中找到对应的方法。
+      例如，在使用注解时我们可能会在Controller中用于@RequestMapping(value = "list", method = RequestMethod.PUT)，
+      所以如果你的表单中使用的是<form method="put">，那么这个表单会被提交到标了Method="PUT"的方法中。
+      同时，HiddenHttpMethodFilter必须作用于dispatcher前 &ndash;&gt;
+  <filter>
+    <filter-name>hiddenHttpMethodFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>hiddenHttpMethodFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    &lt;!&ndash;<servlet-name>dispatcherServlet</servlet-name> &ndash;&gt;
+  </filter-mapping>-->
+
+  <!-- ############################################ filter start  ############################################ -->
+  <!-- 编码过滤器 -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <async-supported>true</async-supported>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!-- druid 数据源，用于采集 web-jdbc 关联监控的数据 -->
+  <!-- 具体参考官网：https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_%E9%85%8D%E7%BD%AEWebStatFilter-->
+  <filter>
+    <filter-name>DruidWebStatFilter</filter-name>
+    <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+    <init-param>
+      <param-name>exclusions</param-name>
+      <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
+    </init-param>
+    <init-param>
+      <param-name>profileEnable</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>DruidWebStatFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+
+  <!-- ############################################ filter end  ############################################ -->
+  <!--
+  &lt;!&ndash;SpringMVC前端控制器 &ndash;&gt;
   <servlet>
     <servlet-name>dispatcherServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -31,15 +95,15 @@
       <param-value>classpath:spring-mvc.xml</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
-      <!--异步处理支持,详见servlet3.0新特性详解-->
-      <async-supported>true</async-supported>
+    &lt;!&ndash;异步处理支持,详见servlet3.0新特性详解&ndash;&gt;
+    <async-supported>true</async-supported>
   </servlet>
   <servlet-mapping>
     <servlet-name>dispatcherServlet</servlet-name>
     <url-pattern>/</url-pattern>
-    <!--"/"会匹配到/login这样的路径型url，不会匹配到模式为*.jsp这样的后缀型url -->
-    <!--"/*"会匹配所有url：路径型的和后缀型的url(包括/login,.jsp,.js和*.html等) -->
-    <!--    在"/*"这种情况，springMVC会把*.jsp,*.sql,*.txt都当做txt处理。结果就是直接在浏览器加载了jsp源码。 -->
+    &lt;!&ndash;"/"会匹配到/login这样的路径型url，不会匹配到模式为*.jsp这样的后缀型url &ndash;&gt;
+    &lt;!&ndash;"/*"会匹配所有url：路径型的和后缀型的url(包括/login,.jsp,.js和*.html等) &ndash;&gt;
+    &lt;!&ndash;    在"/*"这种情况，springMVC会把*.jsp,*.sql,*.txt都当做txt处理。结果就是直接在浏览器加载了jsp源码。 &ndash;&gt;
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>dispatcherServlet</servlet-name>
@@ -52,55 +116,64 @@
   <servlet-mapping>
     <servlet-name>dispatcherServlet</servlet-name>
     <url-pattern>*.upload</url-pattern>
+  </servlet-mapping>-->
+
+  <!-- ############################################ servlet start  ############################################ -->
+
+
+  <!-- Spring MVC servlet -->
+  <servlet>
+    <servlet-name>SpringMVC</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring-mvc.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+    <!--异步处理支持,详见servlet3.0新特性详解-->
+    <async-supported>true</async-supported>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SpringMVC</servlet-name>
+    <!-- 此处可以可以配置成 *.do ，对应struts的后缀习惯 -->
+    <!--"/"会匹配到/login这样的路径型url，不会匹配到模式为*.jsp这样的后缀型url -->
+    <!--"/*"会匹配所有url：路径型的和后缀型的url(包括/login,.jsp,.js和*.html等) -->
+    <!--    在"/*"这种情况，springMVC会把*.jsp,*.sql,*.txt都当做txt处理。结果就是直接在浏览器加载了jsp源码。 -->
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>/index.jsp</welcome-file>
+  </welcome-file-list>
+
+
+  <!--展示Druid的统计信息-->
+  <!--具体可以看官网信息：https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_StatViewServlet%E9%85%8D%E7%BD%AE-->
+  <servlet>
+    <servlet-name>DruidStatView</servlet-name>
+    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DruidStatView</servlet-name>
+    <!--访问路径eg：http://localhost:8080/druid/index.html -->
+    <url-pattern>/druid/*</url-pattern>
   </servlet-mapping>
 
-  <!--过滤器：使浏览器form表单支持GET、POST、PUT与DELETE请求 -->
-  <!--工作原理是将jsp页面的form表单的method属性值在doFilterInternal方法中转化为标准的Http方法，
-      即GET,、POST、HEAD、OPTIONS、PUT、DELETE、TRACE，然后到Controller中找到对应的方法。
-      例如，在使用注解时我们可能会在Controller中用于@RequestMapping(value = "list", method = RequestMethod.PUT)，
-      所以如果你的表单中使用的是<form method="put">，那么这个表单会被提交到标了Method="PUT"的方法中。
-      同时，HiddenHttpMethodFilter必须作用于dispatcher前 -->
-  <filter>
-    <filter-name>hiddenHttpMethodFilter</filter-name>
-    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>hiddenHttpMethodFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-    <!--<servlet-name>dispatcherServlet</servlet-name> -->
-  </filter-mapping>
 
-  <!--过滤器：解决乱码 -->
-  <filter>
-    <filter-name>characterEncodingFilter</filter-name>
-    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>UTF-8</param-value>
-    </init-param>
-    <init-param>
-      <param-name>forceEncoding</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>characterEncodingFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
+  <!-- ############################################ servlet end  ############################################ -->
 
-  <!--logback配置文件-->
+  <!--logback配置文件
   <context-param>
     <param-name>logbackConfigLocation</param-name>
-    <!--classpath是指 WEB-INF文件夹下的classes目录-->
-    <!--classpath：只会到你的class路径中查找找文件;-->
-    <!--classpath*：不仅包含class路径，还包括jar文件中(class路径)进行查找.-->
-    <!--而使用classpath*:前缀则能够加载所有符合类型的文件。然而，使用classpath*:需要遍历所有的classpath，加载速度很慢，因此您应该尽量避免使用classpath*。-->
+    &lt;!&ndash;classpath是指 WEB-INF文件夹下的classes目录&ndash;&gt;
+    &lt;!&ndash;classpath：只会到你的class路径中查找找文件;&ndash;&gt;
+    &lt;!&ndash;classpath*：不仅包含class路径，还包括jar文件中(class路径)进行查找.&ndash;&gt;
+    &lt;!&ndash;而使用classpath*:前缀则能够加载所有符合类型的文件。然而，使用classpath*:需要遍历所有的classpath，加载速度很慢，因此您应该尽量避免使用classpath*。&ndash;&gt;
     <param-value>classpath:/resources/logback.xml</param-value>
   </context-param>
   <listener>
-    <!--其中LogbackConfigListener由前述的logback-ext-spring依赖提供，若不依赖它则找不到这个listener类-->
+    &lt;!&ndash;其中LogbackConfigListener由前述的logback-ext-spring依赖提供，若不依赖它则找不到这个listener类&ndash;&gt;
     <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
-  </listener>
+  </listener>-->
 
   <!-- 配置错误处理 -->
   <!--<error-page>
@@ -114,13 +187,13 @@
   </error-page>-->
 
   <!-- 配置异常处理 -->
-  <error-page>
+  <!--<error-page>
     <exception-type>javax.servlet.ServletException</exception-type>
     <location>/res/error.html</location>
   </error-page>
   <error-page>
     <exception-type>java.lang.NullPointerException</exception-type>
     <location>/res/error.html</location>
-  </error-page>
+  </error-page>-->
 
 </web-app>

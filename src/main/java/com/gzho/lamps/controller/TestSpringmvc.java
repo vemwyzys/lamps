@@ -17,19 +17,24 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class TestSpringmvc {
 
-    /*@RequestMapping("/")
+    @RequestMapping("test")
+    public String testIndex(){
+        return "testIndex";
+        //对应刚刚创建的jsp文件名，这里用的是逻辑视图
+    }
+
+    /*@RequestMapping("views/index")
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        ModelAndView mav = new ModelAndView();
+        ModelAndView mav = new ModelAndView("views/index");
         mav.addObject("message", "hello mvc");
         return mav;
     }*/
 
     /*private final Log logger = (Log) LogFactory.getLog(TestSpringmvc.class);
-
     //处理HEAD类型的"/"请求
     @RequestMapping(value = "abc",method = {RequestMethod.HEAD})
     public String head(){
-        return "/index.jsp";
+        return "/testIndex.jsp";
     }*/
 
 }

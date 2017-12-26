@@ -10,18 +10,30 @@
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
         </webroots>
         <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/java" />
           <root url="file://$MODULE_DIR$/src/main/resources" />
+          <root url="file://$MODULE_DIR$/src/main/java" />
         </sourceRoots>
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
       <configuration>
         <fileset id="web dispatcherServlet servlet context" name="MVC dispatcherServlet servlet context" removed="true">
-          <dependency>web application context</dependency>
           <file>file://$MODULE_DIR$/src/main/resources/applicationContext.xml</file>
         </fileset>
-        <fileset id="fileset" name="Spring Mvc" removed="false">
+        <fileset id="web application context" name="MVC application context" removed="true">
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-dataSource.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-transaction.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-hibernate.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext.xml</file>
+        </fileset>
+        <fileset id="web SpringMVC servlet context" name="MVC SpringMVC servlet context" removed="true">
+          <file>file://$MODULE_DIR$/src/main/resources/spring-mvc.xml</file>
+        </fileset>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-dataSource.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-hibernate.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext-transaction.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/applicationContext.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/spring-mvc.xml</file>
         </fileset>
       </configuration>
